@@ -9,24 +9,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import be.vdab.repositories.DocentRepository;
+import be.vdab.services.DocentService;
 import be.vdab.util.StringUtils;
 
-/**
- * Servlet implementation class ZoekenServlet
- */
 @WebServlet("/docenten/zoeken.htm")
 public class ZoekenServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String VIEW = "/WEB-INF/JSP/docenten/zoeken.jsp";
-	private final transient DocentRepository docentRepository 
-		= new DocentRepository();
+	private final transient DocentService docentService 
+		= new DocentService();
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(request.getQueryString() != null) {
 			String id = request.getParameter("id");
 			if(StringUtils.isLong(id)) {
-				docentRepository.read(Long.parseLong(id)).ifPresent(
+				docentService.read(Long.parseLong(id)).ifPresent(
 						docent -> request.setAttribute("docent", docent));
 			} else {
 				request.setAttribute("fouten",
