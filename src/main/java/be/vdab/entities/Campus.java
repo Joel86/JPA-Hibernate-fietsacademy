@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 import be.vdab.valueobjects.Adres;
 import be.vdab.valueobjects.TelefoonNr;
@@ -34,10 +35,15 @@ public class Campus implements Serializable {
 	 joinColumns = @JoinColumn(name = "campusid"))
 	@OrderBy("fax")
 	private Set<TelefoonNr> telefoonNrs;
+	@OneToMany
+	@JoinColumn(name = "campusid")
+	@OrderBy("voornaam, familienaam")
+	private Set<Docent> docenten;
 	public Campus(String naam, Adres adres) {
 		setNaam(naam);
 		setAdres(adres);
 		telefoonNrs = new LinkedHashSet<>();
+		docenten = new LinkedHashSet<>();
 	}
 	protected Campus() {}
 	public long getId() {
@@ -66,5 +72,14 @@ public class Campus implements Serializable {
 	}
 	public void remove(TelefoonNr telefoonNr) {
 		telefoonNrs.remove(telefoonNr);
+	}
+	public Set<Docent> getDocenten() {
+		return Collections.unmodifiableSet(docenten);
+	}
+	public void add(Docent docent) {
+		docenten.add(docent);
+	}
+	public void remove(Docent docent) {
+		docenten.remove(docent);
 	}
 }
