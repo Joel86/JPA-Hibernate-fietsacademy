@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
@@ -19,6 +20,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import be.vdab.enums.Geslacht;
@@ -43,6 +45,8 @@ public class Docent implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "campusid")
 	private Campus campus;
+	@ManyToMany(mappedBy = "docenten")
+	private Set<Verantwoordelijkheid> verantwoordelijkheden = new LinkedHashSet<>();
 	public Docent(String voornaam, String familienaam, BigDecimal wedde, 
 			Geslacht geslacht, long rijksRegisterNr) {
 		setVoornaam(voornaam);
@@ -51,6 +55,7 @@ public class Docent implements Serializable {
 		setGeslacht(geslacht);
 		setRijksRegisterNr(rijksRegisterNr);
 		bijnamen = new HashSet<>();
+		verantwoordelijkheden = new LinkedHashSet<>();
 	}
 	protected Docent() {}
 	public long getId() {
@@ -145,6 +150,21 @@ public class Docent implements Serializable {
 		BigDecimal factor = 
 				BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
 		wedde = wedde.multiply(factor).setScale(2, RoundingMode.HALF_UP);
+	}
+	public void add(Verantwoordelijkheid verantwoordelijkheid) {
+		verantwoordelijkheden.add(verantwoordelijkheid);
+		if(!verantwoordelijkheid.getDocenten().contains(this)) {
+			verantwoordelijkheid.add(this);
+		}
+	}
+	public void remove(Verantwoordelijkheid verantwoordelijkheid) {
+		verantwoordelijkheden.remove(verantwoordelijkheid);
+		if(verantwoordelijkheid.getDocenten().contains(this)) {
+			verantwoordelijkheid.remove(this);
+		}
+	}
+	public Set<Verantwoordelijkheid> getVerantwoordelijkheden() {
+		return Collections.unmodifiableSet(verantwoordelijkheden);
 	}
 	@Override
 	public boolean equals(Object obj) {
