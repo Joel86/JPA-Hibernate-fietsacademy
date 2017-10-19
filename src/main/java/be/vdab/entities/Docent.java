@@ -40,9 +40,9 @@ public class Docent implements Serializable {
 			joinColumns = @JoinColumn(name = "docentid"))
 	@Column(name = "Bijnaam")
 	private Set<String> bijnamen;
-	//@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	//@JoinColumn(name = "campusid")
-	//private Campus campus;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "campusid")
+	private Campus campus;
 	public Docent(String voornaam, String familienaam, BigDecimal wedde, 
 			Geslacht geslacht, long rijksRegisterNr) {
 		setVoornaam(voornaam);
@@ -104,12 +104,18 @@ public class Docent implements Serializable {
 	public Set<String> getBijnamen() {
 		return Collections.unmodifiableSet(bijnamen);
 	}
-//	public Campus getCampus() {
-//		return campus;
-//	}
-//	public void setCampus(Campus campus) {
-//		this.campus = campus;
-//	}
+	public Campus getCampus() {
+		return campus;
+	}
+	public void setCampus(Campus campus) {
+		if(this.campus != null && this.campus.getDocenten().contains(this)) {
+			this.campus.remove(this);
+		}
+		this.campus = campus;
+		if(campus != null && !campus.getDocenten().contains(this)) {
+			campus.add(this);
+		}
+	}
 	public void addBijnaam(String bijnaam) {
 		bijnamen.add(bijnaam);
 	}

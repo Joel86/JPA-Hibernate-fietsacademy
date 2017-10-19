@@ -35,8 +35,7 @@ public class Campus implements Serializable {
 	 joinColumns = @JoinColumn(name = "campusid"))
 	@OrderBy("fax")
 	private Set<TelefoonNr> telefoonNrs;
-	@OneToMany
-	@JoinColumn(name = "campusid")
+	@OneToMany(mappedBy = "campus")
 	@OrderBy("voornaam, familienaam")
 	private Set<Docent> docenten;
 	public Campus(String naam, Adres adres) {
@@ -78,8 +77,14 @@ public class Campus implements Serializable {
 	}
 	public void add(Docent docent) {
 		docenten.add(docent);
+		if(docent.getCampus() != this) {
+			docent.setCampus(this);
+		}
 	}
 	public void remove(Docent docent) {
 		docenten.remove(docent);
+		if(docent.getCampus() != this) {
+			docent.setCampus(this);
+		}
 	}
 }
