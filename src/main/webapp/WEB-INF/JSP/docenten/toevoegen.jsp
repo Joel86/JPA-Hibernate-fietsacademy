@@ -27,6 +27,15 @@
     <label>Rijksregisternummer:<span>${fouten.rijksRegisterNr}</span>
       <input name='rijksRegisterNr' value='${param.rijksRegisterNr}' required
       type='number' min='10000000000' max='99999999999'></label>
+    <label>Campus: <span>${fouten.campussen}</span>
+      <select name='campussen' size='${campussen.size()}' required>
+        <c:forEach items='${campussen}' var='campus'>
+          <option value='${campus.id}'
+            ${campus.id == param.campussen ? 'selected' : ''}>
+            ${campus.naam} (${campus.adres.gemeente})</option>
+        </c:forEach>
+      </select>
+    </label>
     <input type='submit' value='Toevoegen' id='toevoegknop'>
   </form>
   <script>

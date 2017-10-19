@@ -18,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import be.vdab.enums.Geslacht;
 
@@ -38,6 +39,9 @@ public class Docent implements Serializable {
 			joinColumns = @JoinColumn(name = "docentid"))
 	@Column(name = "Bijnaam")
 	private Set<String> bijnamen;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "campusid")
+	private Campus campus;
 	public Docent(String voornaam, String familienaam, BigDecimal wedde, 
 			Geslacht geslacht, long rijksRegisterNr) {
 		setVoornaam(voornaam);
@@ -98,6 +102,12 @@ public class Docent implements Serializable {
 	}
 	public Set<String> getBijnamen() {
 		return Collections.unmodifiableSet(bijnamen);
+	}
+	public Campus getCampus() {
+		return campus;
+	}
+	public void setCampus(Campus campus) {
+		this.campus = campus;
 	}
 	public void addBijnaam(String bijnaam) {
 		bijnamen.add(bijnaam);
